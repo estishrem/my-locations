@@ -1,0 +1,11 @@
+.list-title {
+    position: absolute;
+    left: 45%;
+}
+.MuiButton-outlined {
+    border-color: white !important;
+    color: white !important;
+}
+.MuiButton-root {
+    margin-right: 5px  !important;
+}
