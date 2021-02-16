@@ -2,7 +2,10 @@ import {
     ADD_CATEGORY,
     DELETE_CATEGORY,
     EDIT_CATEGORY,
-    SELECT_CATEGORY,
+    ADD_LOCATION,
+    DELETE_LOCATION,
+    EDIT_LOCATION,
+    SELECT_ITEM
 } from './actionTypes';
 
 export const addCategory = (name) => {
@@ -12,23 +15,47 @@ export const addCategory = (name) => {
     }
 }
 
-export const deleteCategory = (name) => {
+export const deleteCategory = (item) => {
     return {
         type: DELETE_CATEGORY,
-        payload: name
+        payload: item
     }
 }
 
-export const editCategory = (newName) => {
+export const editCategory = (oldCategory, newName) => {
     return {
         type: EDIT_CATEGORY,
-        payload: newName
+        payload: {oldCategory, newName}
     }
 }
 
-export const selectCategory = (name) => {
+export const addLocation = (location) => {
     return {
-        type: SELECT_CATEGORY,
-        payload: name
+        type: ADD_LOCATION,
+        payload: location
+    }
+}
+
+export const deleteLocation = (location) => {
+    return {
+        type: DELETE_LOCATION,
+        payload: location
+    }
+}
+
+export const editLocation = (oldLocation, newLocation) => {
+    return {
+        type: EDIT_LOCATION,
+        payload: {oldLocation, newLocation}
+    }
+}
+
+export const selectItem = (item, type) => {
+    return {
+        type: SELECT_ITEM,
+        payload: {
+            item,
+            type
+        }
     }
 }

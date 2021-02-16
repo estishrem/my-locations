@@ -9,19 +9,21 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from '@material-ui/core/Button';
 
-import { addCategory, editCategory } from '../../redux/actions';
+import { addCategory, editCategory, editLocation, selectItem } from '../../../redux/actions';
+import { CATEGORY_TYPE } from '../../../redux/reducers/common';
 
 function EditCategory(props) {
 
     const { isNew, onHide, show } = { ...props }
 
     const categories = useSelector(state => state.categories.categories);
-    const selectedCategory = useSelector(state => state.categories.selectedCategory);
+    const selectedCategory = useSelector(state => state.common.selectedItem);
+    const locations = useSelector(state => state.locations.locations);
     const dispatch = useDispatch();
     const [newName, setNewName] = useState(null);
     const [errorMassage, setErrorMassage] = useState('');
 
-    const dialogTitle = isNew ? 'Add Category Name' : 'Edit Category Name';
+    const dialogTitle = isNew ? 'Add Category' : 'Edit Category';
     const defaultValue = isNew ? null : selectedCategory;
 
     const handleNameChange = (e) => {
@@ -30,7 +32,7 @@ function EditCategory(props) {
 
     const checkIfExist = () => {
         let exist = false;
-        if (categories.find(category => category === newName && category !== selectedCategory)) {
+        if (categories.find(category => category.name === newName && category !== selectedCategory)) {
             exist = true;
         }
         return exist
@@ -42,14 +44,34 @@ function EditCategory(props) {
         onHide();
     }
 
-    const handleSave = () => {
+    const checkNameField = () => {
+        var valid = false;
         if (!newName && isNew || newName === '' && !isNew) {
             setErrorMassage('Please fill category name.');
         } else if (checkIfExist()) {
             setErrorMassage('Category name already exist.');
         } else {
-            const action = isNew ? addCategory : editCategory
-            dispatch(action(newName))
+            setErrorMassage('');
+            valid = true;
+        }
+        return valid;
+    }
+
+    const handleSave = () => {
+        if (checkNameField()) {
+            if (isNew) {
+                dispatch(addCategory(newName));
+            } else {
+                dispatch(editCategory(selectedCategory, newName));
+                locations.map(location => {
+                    if (location.category === selectedCategory.name && newName) {
+                        var newLocation = location;
+                        newLocation.category = newName;
+                        dispatch(editLocation(location, newLocation));
+                    }
+                })
+            }
+            dispatch(selectItem(null, CATEGORY_TYPE));
             closeDialog();
         }
     }
@@ -62,7 +84,7 @@ function EditCategory(props) {
         <Dialog open={show} onClose={closeDialog} maxWidth="xs" fullWidth={true} >
             <DialogTitle> {dialogTitle}</DialogTitle>
             <DialogContent>
-                <TextField fullWidth label="Category Name" defaultValue={defaultValue}
+                <TextField fullWidth label="Category Name" defaultValue={defaultValue && defaultValue.name}
                     required error={!!errorMassage} helperText={errorMassage || ''} onChange={handleNameChange} />
             </DialogContent>
             <DialogActions>

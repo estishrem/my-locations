@@ -1,13 +1,15 @@
 import React from 'react';
 
-import CategoriesList from './body/CategoriesList';
+import ShowList from './body/ShowList';
+import Footer from './footer/Footer';
 import Header from './header/Header';
 
 function Manage() {
     return (
         <div className='wrapper'>
             <Header />
-            <CategoriesList />
+            <ShowList/>
+            <Footer/>
         </div>
     )
 }
